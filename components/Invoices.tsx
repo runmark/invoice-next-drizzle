@@ -1,43 +1,17 @@
 import { invoices } from "@/db/schema";
 import React, { useEffect, useState } from "react";
 
-type Invoice = typeof invoices.$inferSelect;
-
 // type Invoice = {
-//     id: number,
-//     name: string,
-//     senderEmail: string,
-//     recipientEmail: string,
-//     date: string,
-//     dueDate: string,
-//     shippingAddress: string,
-//     invoiceNote: string,
-//     description: string,
-//     qty: number,
-//     rate: number,
-//     total: number,
+//     id: number, //     name: string, //     senderEmail: string, //     recipientEmail: string, //     date: string, //     dueDate: string, //     shippingAddress: string,
+//     invoiceNote: string, //     description: string, //     qty: number, //     rate: number, //     total: number,
 // };
+type Invoice = typeof invoices.$inferSelect;
 
 const Invoices: React.FC = () => {
 
     const [invoices, setInvoices] = useState<Invoice[]>([]);
     useEffect(() => {
-        setInvoices([
-            {
-                id: 1,
-                name: 'mark',
-                senderEmail: 'mark@173.com',
-                recipientEmail: 'yan@173.com',
-                date: '2024-06-15',
-                dueDate: '2024-07-14',
-                shippingAddress: 'zhongjianpinzhi',
-                invoiceNote: 'note xxxxxx',
-                description: 'description xxxxx',
-                qty: 300,
-                rate: 2,
-                total: 700,
-            },
-        ])
+        // setInvoices(await);
     }, []);
 
     const handleOpenInvoiceForm = () => { };
