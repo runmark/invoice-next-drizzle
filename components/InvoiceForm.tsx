@@ -79,7 +79,7 @@ const InvoiceForm = ({ onClose, setInvoices, selectedInvoice }: Props) => {
                     (prev) => prev.map((invoice) =>
                         invoice.id === selectedInvoice.id ? { ...invoice, ...formFields } : invoice
                     ));
-                window.location.reload();
+                // window.location.reload();
             } else {
                 const invoiceCreated = await addInovice(formFields);
                 setInvoices((prev) => [...prev, ...invoiceCreated]);
