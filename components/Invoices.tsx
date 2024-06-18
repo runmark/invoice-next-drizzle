@@ -30,7 +30,10 @@ const Invoices: React.FC = () => {
         setIsInvoiceFormOpen(false);
     };
 
-    const handleEditInvoice = (invoice: Invoice) => { };
+    const handleEditInvoice = (invoice: Invoice) => {
+        setSelectedInvoice(invoice);
+        setIsInvoiceFormOpen(true);
+    };
 
     const handleDeleteInvoice = async (invoiceId: number) => {
         try {

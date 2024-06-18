@@ -1,3 +1,4 @@
+import { addInovice, editInvoice } from "@/appservice/invoice";
 import { invoices } from "@/db/schema";
 import React, { ChangeEvent, useEffect, useReducer } from "react";
 
@@ -71,6 +72,23 @@ const InvoiceForm = ({ onClose, setInvoices, selectedInvoice }: Props) => {
 
     const handleSendInvoice = async () => {
 
+        try {
+            if (selectedInvoice) {
+                const invoiceUpdated = editInvoice({ ...formFields, id: selectedInvoice.id });
+                setInvoices(
+                    (prev) => prev.map((invoice) =>
+                        invoice.id === selectedInvoice.id ? { ...invoice, ...formFields } : invoice
+                    ));
+                window.location.reload();
+            } else {
+                const invoiceCreated = await addInovice(formFields);
+                setInvoices((prev) => [...prev, ...invoiceCreated]);
+            }
+
+            onClose();
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     return (
