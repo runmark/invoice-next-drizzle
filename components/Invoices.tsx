@@ -2,12 +2,22 @@ import { deleteInvoice, fetchInvoices } from "@/appservice/invoice";
 import { invoices } from "@/db/schema";
 import React, { useEffect, useState } from "react";
 import InvoiceForm from "./InvoiceForm";
+import jsPDF from "jspdf";
+import 'jspdf-autotable';
 
 // type Invoice = {
 //     id: number, //     name: string, //     senderEmail: string, //     recipientEmail: string, //     date: string, //     dueDate: string, //     shippingAddress: string,
 //     invoiceNote: string, //     description: string, //     qty: number, //     rate: number, //     total: number,
 // };
 type Invoice = typeof invoices.$inferSelect;
+
+
+class PdfWithAutoTable extends jsPDF {
+    autoTable(options: any) {
+        // @ts-ignore
+        super.autoTable(options);
+    }
+}
 
 const Invoices: React.FC = () => {
 
@@ -43,6 +53,37 @@ const Invoices: React.FC = () => {
         } catch (err) {
             console.log(err);
         }
+    };
+
+    const handleDownloadPdf = async (invoice: Invoice) => {
+        const pdf = new PdfWithAutoTable();
+        pdf.setFont("helvetica", "normal");
+        pdf.setFontSize(12);
+
+        const tableData = [
+            ["Invoice id", `${invoice.id}`],
+            ["Sender's name", `${invoice.name}`],
+            ["Sender's email", `${invoice.senderEmail}`],
+            ["Recipient's email", `${invoice.recipientEmail}`],
+            ["Invoice date", `${invoice.date}`],
+            ["Due date", `${invoice.dueDate}`],
+            ["Shipping address", `${invoice.shippingAddress}`],
+            ["Invoice note", `${invoice.invoiceNote}`],
+            ["Invoice description", `${invoice.description}`],
+            ["Item quantity", `(${invoice.qty})`],
+            ["Rate", `${invoice.rate}`],
+            ["Total", `${invoice.total}`],
+        ];
+
+        pdf.autoTable({
+            startY: 40,
+            head: [["Item", "Details"]],
+            body: tableData,
+            headStyles: { fontSize: 18, fontStyle: "bold" },
+            styles: { fontSize: 15, fontStyle: "semibold" },
+        });
+
+        pdf.save(`Invoice_${invoice.id}.pdf`);
     };
 
 
@@ -217,7 +258,9 @@ const Invoices: React.FC = () => {
 
                                 <div className="flex flex-row justify-between w-full mt-1">
                                     <div>
-                                        <button className="bg-blue-500 px-2 py-2 rounded text-white hover:bg-blue-600">
+                                        <button className="bg-blue-500 px-2 py-2 rounded text-white hover:bg-blue-600"
+                                            onClick={() => handleDownloadPdf(invoice)}
+                                        >
                                             Download invoice
                                         </button>
 
