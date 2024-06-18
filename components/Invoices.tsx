@@ -1,5 +1,7 @@
+import { deleteInvoice, fetchInvoices } from "@/appservice/invoice";
 import { invoices } from "@/db/schema";
 import React, { useEffect, useState } from "react";
+import InvoiceForm from "./InvoiceForm";
 
 // type Invoice = {
 //     id: number, //     name: string, //     senderEmail: string, //     recipientEmail: string, //     date: string, //     dueDate: string, //     shippingAddress: string,
@@ -10,13 +12,35 @@ type Invoice = typeof invoices.$inferSelect;
 const Invoices: React.FC = () => {
 
     const [invoices, setInvoices] = useState<Invoice[]>([]);
+    const [isInvoiceFormOpen, setIsInvoiceFormOpen] = useState(false);
+    const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+
     useEffect(() => {
-        // setInvoices(await);
+        const updateInvoices = async () => {
+            setInvoices(await fetchInvoices());
+        };
+        updateInvoices();
     }, []);
 
-    const handleOpenInvoiceForm = () => { };
-    const handleEditInvoice = () => { };
-    const handleDeleteInvoice = () => { };
+    const handleOpenInvoiceForm = () => {
+        setIsInvoiceFormOpen(true);
+    };
+
+    const handleCloseInvoiceForm = () => {
+        setIsInvoiceFormOpen(false);
+    };
+
+    const handleEditInvoice = (invoice: Invoice) => { };
+
+    const handleDeleteInvoice = async (invoiceId: number) => {
+        try {
+            alert('Are you sure you want to delete this invoice?');
+            await deleteInvoice(invoiceId);
+            setInvoices(invoices.filter((invoice) => invoice.id !== invoiceId));
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
 
     return (
@@ -30,6 +54,14 @@ const Invoices: React.FC = () => {
                     Create invoice
                 </button>
             </section>
+
+            {isInvoiceFormOpen && (
+                <InvoiceForm
+                    onClose={handleCloseInvoiceForm}
+                    setInvoices={setInvoices}
+                    selectedInvoice={selectedInvoice}
+                />
+            )}
 
             {invoices.length === 0 ? (
                 <p>No invoice yet.</p>
